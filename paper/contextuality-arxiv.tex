@@ -164,15 +164,19 @@ rank & graph6 & $|E|$ & $\alpha$ & $\theta$ & $\gap$ & remarks \\
 
 \paragraph{Gap versus ratio.} The maximizer of the ratio $\theta/\alpha$ is a different graph from the gap maximizer at $n=8,10,11$ (at $n=10$ it is \g{IUZurzmmo} with $\alpha=2$, $\theta=5/2$; at $n=11$ the dense graph in row~6 of Table~\ref{tab:n11}); only at $n=9$ do the two coincide.
 
-\subsection{Triangle-free graphs, $n=12,13$}
+\subsection{Triangle-free graphs, $n=12,13,14$}
 
-Motivated by the $n=11$ result we searched exhaustively over connected triangle-free graphs, generated with \texttt{geng -t}~\cite{nauty}: $90{,}842$ graphs for $n=11$ (recovering the global top six), $1{,}144{,}061$ for $n=12$ and $19{,}425{,}052$ for $n=13$. The maxima are
+Motivated by the $n=11$ result we searched exhaustively over connected triangle-free graphs, generated with \texttt{geng -t}~\cite{nauty}: $90{,}842$ graphs for $n=11$ (recovering the global top six), $1{,}144{,}061$ for $n=12$, $19{,}425{,}052$ for $n=13$ and $445{,}781{,}050$ for $n=14$ (6.1 hours on the GPU). The maxima for $n=12,13$ are
 \begin{align*}
 \gap_{\max}^{\rm tf}(12)&=0.930021\quad(\theta=4.930021,\ \alpha=4,\ 20\text{ edges},\ \g{K?\textasciigrave{}DA\textasciigrave{}gd?\{Dg},\ |\mathrm{Aut}|=8,\ \operatorname{rank}X=5),\\
 \gap_{\max}^{\rm tf}(13)&=1.181737\quad(\theta=5.181737,\ \alpha=4,\ 26\text{ edges},\ \g{L?\textasciigrave{}DE\textasciigrave{}gl@YJODg}).
 \end{align*}
 At $n=13$ the maximizer is isolated: no other connected triangle-free graph on 13 vertices reaches $\gap=0.95$ (the screen threshold), and among the triangle-free graphs with $\alpha\le5$ --- the $R(3,6)$-graphs on 13 vertices, all $275{,}086$ of which we solved exactly --- the best connected graph with $\alpha=5$ has $\gap=0.854480$. % TODO: replace by the full-class runner-up once the threshold-0.80 rerun completes
-The maximizer is 4-regular with $|\mathrm{Aut}|=52$ and is isomorphic to the circulant graph $C_{13}(1,5)$, the unique $(3,5)$-Ramsey-critical graph~\cite{radziszowski}.
+The maximizer is 4-regular with $|\mathrm{Aut}|=52$ and is isomorphic to the circulant graph $C_{13}(1,5)$, the unique $(3,5)$-Ramsey-critical graph~\cite{radziszowski}. At $n=14$, the first size at which triangle-free graphs must have $\alpha\ge5$, the exhaustive maximum drops to
+\[
+\gap_{\max}^{\rm tf}(14)=1.072373\quad(\theta=6.072373,\ \alpha=5,\ 24\text{ edges},\ \g{M?AA@agwAg@WM\_Dc?}),
+\]
+attained by an $R(3,6)$-graph --- the best connected graph of the $R(3,6)$ catalogue on 14 vertices (Table~\ref{tab:ramsey}) --- and all $12{,}764$ triangle-free graphs on 14 vertices with certified bound above $1.0$ have $\alpha=5$. This is the drop predicted in Section~\ref{sec:ramsey}, now established exhaustively rather than only within the catalogue.
 
 \section{The Ramsey structure of the maximizers}\label{sec:ramsey}
 
@@ -239,13 +243,13 @@ $k$ & $n$ & \#graphs & $\alpha$ & $\theta_{\max}$ & $\gap$ & best graph (graph6)
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.85\textwidth]{figures/fig_ladder.pdf}
-\caption{(a) Maximum contextuality gap versus number of vertices: exhaustive over all connected graphs ($n\le11$), exhaustive over triangle-free graphs ($n\le13$), and lower bounds from the complete catalogues of $R(3,k)$-graphs. Vertical lines mark the Ramsey numbers $R(3,k)$, where $\alpha$ is forced up by one for triangle-free graphs. (b) Gap per vertex of the record graphs, with the bounds $0.126\le c^*\le\frac12$ of Proposition~\ref{prop:fekete}; the sequence is still increasing at $n=35$.}
+\caption{(a) Maximum contextuality gap versus number of vertices: exhaustive over all connected graphs ($n\le11$), exhaustive over triangle-free graphs ($n\le14$), and lower bounds from the complete catalogues of $R(3,k)$-graphs. Vertical lines mark the Ramsey numbers $R(3,k)$, where $\alpha$ is forced up by one for triangle-free graphs. (b) Gap per vertex of the record graphs, with the bounds $0.126\le c^*\le\frac12$ of Proposition~\ref{prop:fekete}; the sequence is still increasing at $n=35$.}
 \label{fig:ladder}
 \end{figure}
 
 The $R(3,6)$-graphs on 13 vertices ($275{,}086$ graphs, for which $\alpha\in\{4,5\}$) confirm the picture from the other side: the single graph with $\alpha=4$ is $C_{13}(1,5)$ with $\gap=1.181737$, and the best of the $275{,}085$ graphs with $\alpha=5$ reaches only $0.930021$ (it is the twelve-vertex triangle-free maximizer plus an isolated vertex).
 
-Within the triangle-free class the maximum gap is \emph{not} monotone: it falls from $1.1817$ at $n=13$ to $1.0724$ at $n=14$, exactly as predicted by the jump of $\alpha$ at $R(3,5)=14$, and recovers from $n=15$ on. The global $\gap_{\max}(n)$ is monotone by Lemma~\ref{lem:mono}, but the graphs realizing the monotone extension (a record graph plus universal vertices) are degenerate as witnesses. We are led to:
+Within the triangle-free class the maximum gap is \emph{not} monotone: it falls from $1.1817$ at $n=13$ to $1.0724$ at $n=14$ (both exhaustive), exactly as predicted by the jump of $\alpha$ at $R(3,5)=14$, and recovers from $n=15$ on. The global $\gap_{\max}(n)$ is monotone by Lemma~\ref{lem:mono}, but the graphs realizing the monotone extension (a record graph plus universal vertices) are degenerate as witnesses. We are led to:
 
 Call a maximizer of $\gap_{\max}(n)$ \emph{new} if it is not obtained from a maximizer on fewer vertices by adding universal vertices (Lemma~\ref{lem:mono}); the degenerate extensions are never triangle-free, and they carry no information beyond the smaller record.
 

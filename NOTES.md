@@ -112,6 +112,11 @@ corrected 2026-09-24 evening. Burer–Monteiro minimal-rank search was inconclus
 as an upper bound on the realization dimension only. Paper draft now 13 pages: Discussion + Appendix C written.
 Public repo: https://github.com/danmusetoiu/contextuality-gap
 
+## tf n=14 exhaustive (2026-09-24 night, 6.1 h GPU, `results/tf14/`, `results/tf14_survivors_exact.csv`)
+445,781,050 connected triangle-free graphs on 14 vertices, thr 1.0, 12,764 survivors (ALL α=5), max Δ = 1.072373
+(ϑ 6.072373, 24 edges, `M?AA@agwAg@WM_Dc?`) = isomorphic to the best connected R(3,6)-catalogue graph on 14 vertices.
+Confirms the Ramsey-predicted drop 1.18 → 1.07 exhaustively.
+
 ## n=12 local search with triangles (`localsearch12.py`, 90 min, 2026-09-24 evening)
 1,425,556 distinct 12-vertex graphs evaluated (exact ϑ, α); best overall = tf record 0.930021; best WITH a triangle
 0.866462 (1 triangle, 21 edges, α=4). Evidence for Conjecture at n=12. Results: `results/localsearch12.csv` (top 5000).
