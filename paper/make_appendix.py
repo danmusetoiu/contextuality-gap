@@ -26,7 +26,7 @@ def main():
     out = []
     d = pd.read_csv(os.path.join(ROOT, "results/n8.csv")).sort_values("gap", ascending=False).head(10).reset_index(drop=True)
     notes = {0: "Quad-$C_5$", 2: "Wagner graph", 6: "CHSH-type graph, ratio maximizer"}
-    out.append(BS + "begin{table}[h]" + BS + "centering" + BS + "small" + BS + "caption{Top ten connected graphs on eight vertices by $" + BS + "gap$ (our run, Clarabel), matching Table~II of~" + BS + "cite{tamer2026} rank for rank.}" + BS + "label{tab:n8}")
+    out.append(BS + "begin{table}[H]" + BS + "centering" + BS + "small" + BS + "caption{Top ten connected graphs on eight vertices by $" + BS + "gap$ (our run, Clarabel), matching Table~II of~" + BS + "cite{tamer2026} rank for rank.}" + BS + "label{tab:n8}")
     out.append(BS + "begin{tabular}{rlrrrrrl}" + BS + "toprule rank & graph6 & $|E|$ & $" + BS + "alpha$ & $" + BS + "theta$ & $" + BS + "gap$ & $" + BS + "theta/" + BS + "alpha$ & " + BS + BS + " " + BS + "midrule")
     for i, r in d.iterrows():
         note = notes.get(i, "")

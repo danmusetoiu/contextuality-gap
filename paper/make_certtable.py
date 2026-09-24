@@ -9,7 +9,7 @@ LABEL = {"n8_QuadC5": "Quad-$C_5$ ($n=8$)", "n8_Wagner": "Wagner ($n=8$)", "n9_m
          "R36_n16_max": "$R(3,6)$ best, $n=16$", "R36_n17_max": "$R(3,6)$ best, $n=17$", "R37_n22_max": "$R(3,7)$ best, $n=22$"}
 
 d = pd.read_csv(os.path.join(ROOT, "certificates/summary.csv"))
-out = [BS + "begin{table}[h]" + BS + "centering" + BS + "small",
+out = [BS + "begin{table}[H]" + BS + "centering" + BS + "small",
        BS + "caption{Certificates for the record graphs. $[" + BS + "theta_{" + BS + "rm lb}," + BS + "theta_{" + BS + "rm ub}]$ is the interval certified in double precision by an explicit primal feasible $X$ (trace one, zero on edges, PSD after eigenvalue clipping; the residual on edge entries is below $10^{-9}$) and an explicit dual feasible $Y$ (supported on the edges, $" + BS + "lambda_{" + BS + "max}(J+Y)$ recomputed with LAPACK). $r$ is the rank of the maximum-rank optimal $X$ returned by the interior-point solver, hence an upper bound on the minimal dimension of an orthogonal representation attaining $" + BS + "theta$; $v^*=(" + BS + "alpha-n/r)/(" + BS + "theta-n/r)$ is the critical visibility under white noise in dimension $r$. All matrices and the orthogonal representations are in the repository (" + BS + "texttt{certificates/*.json}).}",
        BS + "label{tab:cert}",
        BS + "begin{tabular}{lrrrllrr}" + BS + "toprule",
