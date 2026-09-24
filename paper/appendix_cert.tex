@@ -1,0 +1,17 @@
+\begin{table}[h]\centering\small
+\caption{Certificates for the record graphs. $[\theta_{\rm lb},\theta_{\rm ub}]$ is the interval certified in double precision by an explicit primal feasible $X$ (trace one, zero on edges, PSD after eigenvalue clipping; the residual on edge entries is below $10^{-9}$) and an explicit dual feasible $Y$ (supported on the edges, $\lambda_{\max}(J+Y)$ recomputed with LAPACK). $r$ is the rank of the maximum-rank optimal $X$ returned by the interior-point solver, hence an upper bound on the minimal dimension of an orthogonal representation attaining $\theta$; $v^*=(\alpha-n/r)/(\theta-n/r)$ is the critical visibility under white noise in dimension $r$. All matrices and the orthogonal representations are in the repository (\texttt{certificates/*.json}).}
+\label{tab:cert}
+\begin{tabular}{lrrrllrr}\toprule
+graph & $n$ & $|E|$ & $\alpha$ & $\theta_{\rm lb}$ & $\theta_{\rm ub}$ & $r$ & $v^*$ \\ \midrule
+Quad-$C_5$ ($n=8$) & 8 & 10 & 3 & 3.467843730 & 3.467843730 & 4 & 0.6813 \\
+Wagner ($n=8$) & 8 & 12 & 3 & 3.414213562 & 3.414213562 & 4 & 0.7071 \\
+$n=9$ maximizer & 9 & 15 & 3 & 3.666666667 & 3.666666667 & 4 & 0.5294 \\
+$n=10$ maximizer & 10 & 20 & 3 & 3.707106781 & 3.707106781 & 4 & 0.4142 \\
+$n=11$ maximizer & 11 & 17 & 4 & 4.774888533 & 4.774888533 & 4 & 0.6173 \\
+$n=11$, rank 2 & 11 & 17 & 4 & 4.754686045 & 4.754686045 & 4 & 0.6235 \\
+$n=12$ triangle-free max. & 12 & 20 & 4 & 4.930021465 & 4.930021467 & 5 & 0.6324 \\
+$C_{13}(1,5)$ & 13 & 26 & 4 & 5.181736625 & 5.181736625 & 5 & 0.5423 \\
+$R(3,6)$ best, $n=16$ & 16 & 35 & 5 & 6.465350297 & 6.465350300 & 5 & 0.5512 \\
+$R(3,6)$ best, $n=17$ & 17 & 40 & 5 & 6.606663834 & 6.606663840 & 6 & 0.5742 \\
+$R(3,7)$ best, $n=22$ & 22 & 66 & 6 & 8.398747394 & 8.398747399 & 6 & 0.4931 \\
+\bottomrule\end{tabular}\end{table}

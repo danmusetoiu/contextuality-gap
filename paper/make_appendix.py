@@ -44,7 +44,26 @@ def main():
         out.append(BS + f"item {name}, {BS}g{{{tex_g6(g6)}}}: {es}.")
     out.append(BS + "end{itemize}")
     r38 = pd.read_csv(os.path.join(ROOT, "results/ramsey_r38_27_top2000.csv")).iloc[0]
-    out.append(BS + f"paragraph{{The $R(3,8)$ record on 27 vertices}} graph6 {BS}g{{{tex_g6(r38.g6)}}}, $|E|={r38.edges}$, ${BS}theta={r38.theta:.6f}$, ${BS}gap={r38.gap:.6f}$.")
+    g = tex_g6(r38.g6)
+    # allow line breaks inside the long string (only between escaped tokens)
+    parts, buf, i = [], "", 0
+    while i < len(g):
+        if g[i] == BS:                       # copy a whole control sequence/symbol + its braces
+            j = i + 1
+            if j < len(g) and g[j].isalpha():
+                while j < len(g) and g[j].isalpha(): j += 1
+            else:
+                j += 1                       # control symbol like \_ \{ \} \# \& \%
+            if j < len(g) and g[j] == "{":
+                k = g.find("}", j); j = k + 1
+            buf += g[i:j]; i = j
+        else:
+            buf += g[i]; i += 1
+        if len(buf) >= 12:
+            parts.append(buf); buf = ""
+    if buf: parts.append(buf)
+    gbreak = (BS + "allowbreak{}").join(parts)
+    out.append(BS + f"paragraph{{The $R(3,8)$ record on 27 vertices}} graph6 {BS}g{{{gbreak}}}, $|E|={r38.edges}$, ${BS}theta={r38.theta:.6f}$, ${BS}gap={r38.gap:.6f}$.")
     path = os.path.join(HERE, "appendix_tables.tex")
     open(path, "w", encoding="utf-8").write("\n".join(out) + "\n")
     print("wrote", path)

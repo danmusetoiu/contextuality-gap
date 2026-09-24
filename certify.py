@@ -107,7 +107,11 @@ def min_rank_bm(n, E, theta, rmax, trials=40, iters=3000, seed=0):
     return None, best
 
 
+BM_GRAPHS = ["n8_QuadC5", "n9_max", "n10_max", "n11_max", "n12_tf_max", "n13_C13_1_5"]   # minimal-dimension search only here
+
+
 def main():
+    import torch; torch.set_num_threads(4)
     rows = []
     for name, g6 in RECORDS.items():
         n, E = g6_to_adj(g6)
@@ -125,7 +129,8 @@ def main():
         edge_res = float(np.abs(Xc[mask == 1]).max())
         lb = float(Xc.sum())                                        # certified lower bound if edge_res ~ 0
         rank, psi, U, onr_val, orth = onr_from_X(X, E)
-        dstar, bm = min_rank_bm(n, E, thP, rmax=rank, trials=20, iters=2000)
+        print(f"{name}: theta {thP:.10f} certified [{lb:.10f}, {ub:.10f}] rank(X)={rank}; BM search up to r={rank} ...", flush=True)
+        dstar, bm = (min_rank_bm(n, E, thP, rmax=rank, trials=6, iters=800) if name in BM_GRAPHS else (None, {}))
         d_use = dstar if dstar else rank
         vis = (al - n / d_use) / (thP - n / d_use) if thP > n / d_use else None
         rec = dict(name=name, g6=g6, n=n, edges=len(E), alpha=al, theta_primal=thP, theta_dual=thD, theta_scs=thS,

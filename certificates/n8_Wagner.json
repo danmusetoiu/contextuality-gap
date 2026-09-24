@@ -14,12 +14,7 @@
  "onr_value": 3.4142135623758327,
  "onr_max_edge_overlap": 8.233969062132473e-13,
  "d_star_bm": null,
- "bm_best_by_rank": {
-  "1": -1,
-  "2": -1,
-  "3": -1,
-  "4": -1
- },
+ "bm_best_by_rank": {},
  "visibility": 0.7071067811826982,
  "gap": 0.41421356238079365,
  "Y": [
