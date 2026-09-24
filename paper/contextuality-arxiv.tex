@@ -122,7 +122,14 @@ $n$ & \#graphs & graph6 & $|E|$ & $\alpha$ & $\theta$ & $\gap_{\max}(n)$ & remar
 
 \paragraph{$n=10$.} The maximizer \g{ICRb\textasciigrave{}yiu?} is 4-regular with 20 edges, $|\mathrm{Aut}|=16$ (orbits of sizes 2 and 8), sixteen induced pentagons and four triangles, and contains the Wagner graph as an induced subgraph. $\theta=3+1/\sqrt2$ to twelve digits. The runner-up (\g{ICQeR\textasciigrave{}[Mg}, $\gap=0.667155$) contains both Quad-$C_5$ and the $n=9$ maximizer; the ``$n=9$ maximizer plus a vertex'' lineage therefore reaches only second place, as the ``Wagner plus a vertex'' lineage did at $n=9$. The values for $n=9$ and $n=10$ can in principle be read off the table of Cabello, Danielsen, L\'opez-Tarrida and Portillo, who computed $\alpha$, $\theta$ (to four decimals) and $\alpha^*$ for all graphs with $\alpha<\theta$ on up to ten vertices~\cite{cabello2013basic,danielsen-db}; our runs reproduce that table graph-for-graph ($16{,}533$ graphs at $n=9$, $975{,}330$ at $n=10$, $|\theta-\theta_{\rm table}|\le 5.3\times10^{-5}$). The maxima were, however, never reported.
 
-\paragraph{$n=11$.} Here the picture changes. The five best graphs (Table~\ref{tab:n11}) are all triangle-free, have $\alpha=4$ and only 17--19 edges, while the best graph of the dense family that dominated $n\le10$ --- the $n=10$ maximizer plus one vertex, $\gap=0.735505$, which contains Quad-$C_5$, the Wagner graph and the $n=9$ and $n=10$ maximizers as induced subgraphs --- is only sixth. The maximizer \g{J?\textasciigrave{}D@pgd?\{?} has girth 4, degree sequence $2^1 3^8 4^2$, $|\mathrm{Aut}|=2$, eleven induced pentagons and four induced heptagons, and $d^*=4$. Note that $\gap_{\max}(11)-\gap_{\max}(10)=0.068$ is the smallest increment in the table; the sparse family is only just taking over.
+\paragraph{$n=11$.} Here the picture changes. The five best graphs (Table~\ref{tab:n11}) are all triangle-free, have $\alpha=4$ and only 17--19 edges, while the best graph of the dense family that dominated $n\le10$ --- the $n=10$ maximizer plus one vertex, $\gap=0.735505$, which contains Quad-$C_5$, the Wagner graph and the $n=9$ and $n=10$ maximizers as induced subgraphs --- is only sixth. The maximizer \g{J?\textasciigrave{}D@pgd?\{?} has girth 4, degree sequence $2^1 3^8 4^2$, $|\mathrm{Aut}|=2$, eleven induced pentagons and four induced heptagons, and $d^*=4$. Note that $\gap_{\max}(11)-\gap_{\max}(10)=0.068$ is the smallest increment in the table; the sparse family is only just taking over. Figure~\ref{fig:n11} shows all 100 survivors of the screen: the two families are separated cleanly by edge count, and every graph above the $n=10$ record with fewer than 20 edges is triangle-free.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.75\textwidth]{figures/fig_n11_survivors.pdf}
+\caption{The 100 graphs on eleven vertices whose certified bound survived the screen (threshold $1/\sqrt2$), with their exact gaps: the sparse triangle-free family ($\alpha=4$) and the dense family ($\alpha=3$, containing the Wagner graph).}
+\label{fig:n11}
+\end{figure}
 
 \begin{table}[t]
 \centering\small
@@ -211,6 +218,8 @@ $k$ & $n$ & \#graphs & $\alpha$ & $\theta_{\max}$ & $\gap$ & best graph (graph6)
 \label{fig:ladder}
 \end{figure}
 
+The $R(3,6)$-graphs on 13 vertices ($275{,}086$ graphs, for which $\alpha\in\{4,5\}$) confirm the picture from the other side: the single graph with $\alpha=4$ is $C_{13}(1,5)$ with $\gap=1.181737$, and the best of the $275{,}085$ graphs with $\alpha=5$ reaches only $0.930021$ (it is the twelve-vertex triangle-free maximizer plus an isolated vertex).
+
 Within the triangle-free class the maximum gap is \emph{not} monotone: it falls from $1.1817$ at $n=13$ to $1.0724$ at $n=14$, exactly as predicted by the jump of $\alpha$ at $R(3,5)=14$, and recovers from $n=15$ on. The global $\gap_{\max}(n)$ is monotone by Lemma~\ref{lem:mono}, but the graphs realizing the monotone extension (a record graph plus universal vertices) are degenerate as witnesses. We are led to:
 
 \begin{conjecture}\label{conj}
@@ -218,6 +227,19 @@ For every $n\ge 11$, $\gap_{\max}(n)$ is attained by a triangle-free graph, and 
 \end{conjecture}
 
 The conjecture is proved for $n=11$ (this paper) and false for $n=9,10$, where triangles are needed to keep $\alpha=3$; it is consistent with everything we computed for $n\le 13$. A brute-force test at $n=12$ would require $1.64\times10^{11}$ graphs.
+
+\subsection{What can be proved: a linear upper bound and linear growth}\label{sec:theory}
+
+The Ramsey mechanism pins $\alpha$ from below; the following elementary bound pins $\gap$ from above.
+
+\begin{proposition}\label{prop:nu}
+For every graph $G$ on $n$ vertices, $\gap(G)\le\nu(G)\le\lfloor n/2\rfloor$, where $\nu(G)$ is the matching number.
+\end{proposition}
+\begin{proof}
+By the sandwich theorem $\theta(G)\le\bar\chi(G)$, the clique cover number~\cite{knuth1994}. Covering the $2\nu$ vertices of a maximum matching by its $\nu$ edges and the remaining vertices by singletons gives $\bar\chi(G)\le n-\nu$. By the Tutte--Berge formula there is a set $S$ with $n-2\nu=\mathrm{odd}(G-S)-|S|$; one vertex from each odd component of $G-S$ forms an independent set, so $\alpha(G)\ge\mathrm{odd}(G-S)\ge n-2\nu$. Hence $\gap=\theta-\alpha\le(n-\nu)-(n-2\nu)=\nu$.
+\end{proof}
+
+The bound is far from tight for small $n$ ($\nu=5$ versus $\gap_{\max}=0.775$ at $n=11$), but it has the right order: $\gap_{\max}(n)$ grows linearly. For the binomial random graph $G(n,d/n)$ with fixed $d$, $\theta=\Theta(\sqrt{n/p})=\Theta(n/\sqrt d)$ with high probability~\cite{cojaoghlan2005}, while $\alpha\approx(2n/d)\ln d$~\cite{frieze1990}; so $\gap\ge c(d)\,n$ with $c(d)>0$ for $d$ large enough, i.e.\ $\gap_{\max}(n)=\Theta(n)$. Heuristically $2n/\sqrt d-(2n/d)\ln d$ is maximal near $d\approx 15$--$20$ with $c\approx0.12$, and our records already climb towards such a slope: $\gap_{\max}(n)/n=0.07,\ 0.09,\ 0.11,\ 0.13$ at $n=11,13,22,35$ (the last three being the Ramsey lower bounds of Table~\ref{tab:ramsey}). The value of $c^*=\lim\gap_{\max}(n)/n\in[c,\tfrac12]$, and whether the maximizers stay triangle-free, are open. % TODO: verify constants in cojaoghlan2005 / frieze1990 and tighten
 
 \section{Methods}\label{sec:method}
 
@@ -227,7 +249,14 @@ Connected graphs on up to ten vertices were taken from McKay's lists and, for el
 \subsection{Rigorous GPU screening for $n=11$}
 Exact SDPs for $10^9$ graphs would take several days. Instead we use the dual~\eqref{eq:theta-dual}: \emph{every} matrix $Y$ supported on the edges gives a certified upper bound $\lambda_{\max}(J+Y)\ge\theta(G)$. For a batch of $2^{15}$ graphs we optimize $Y$ per graph with 100 Adam steps on the softmax-smoothed largest eigenvalue $\tau\log\sum_i e^{\lambda_i/\tau}$ ($\tau$ annealed from $0.3$ to $0.02$; gradient $V\,\mathrm{diag}(\mathrm{softmax}(\lambda/\tau))\,V^{\mathsf T}$ masked to $E$), using batched single-precision eigendecompositions. Every ten steps, graphs with $\lambda_{\max}(J+Y)+10^{-3}-\alpha(G)<\gap_{\rm thr}$ are removed from the batch; since the bound is valid at every step and only improves, this is rigorous up to the single-precision margin, which is three orders of magnitude above the eigenvalue error for $11\times11$ matrices. Survivors receive a double-precision certificate and are re-solved exactly with Clarabel. With $\gap_{\rm thr}=1/\sqrt2-10^{-6}$ (the $n=10$ record, valid by Lemma~\ref{lem:mono}), the screen processed all $1{,}006{,}700{,}565$ graphs in 2.41~hours on an RTX~2000 Ada (8\,GB) at $0.95$--$1.3\times10^5$ graphs per second, leaving 100 survivors, 51 of which indeed have $\gap\ge1/\sqrt2$.
 
-\paragraph{Validation.} With no threshold, the certified bounds exceed $\theta$ by a median of $0.006$ (max $0.21$) over the $11{,}117$ graphs on eight vertices, and never fall below $\theta$. With thresholds $0.60$ at $n=9$ and $0.65$ at $n=10$, the survivors are exactly the two, respectively thirty, graphs known to exceed the threshold (from the exact runs and from~\cite{danielsen-db}), with no misses and no false survivors.
+\paragraph{Validation.} With no threshold, the certified bounds exceed $\theta$ by a median of $0.006$ (max $0.21$) over the $11{,}117$ graphs on eight vertices, and never fall below $\theta$ (Figure~\ref{fig:validation}a). With thresholds $0.60$ at $n=9$ and $0.65$ at $n=10$, the survivors are exactly the two, respectively thirty, graphs known to exceed the threshold (from the exact runs and from~\cite{danielsen-db}), with no misses and no false survivors (Figure~\ref{fig:validation}b).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_validation.pdf}
+\caption{Validation of the GPU screen. (a) Certified upper bound minus exact $\theta$ for all connected graphs on eight vertices, without pruning. (b) At $n=10$: number of graphs with $\gap\ge x$ from the exact run, and the number of survivors of the screen at threshold $0.65$, which coincides with the exact count.}
+\label{fig:validation}
+\end{figure}
 
 \subsection{Ramsey catalogues}
 For the $R(3,k)$-graphs we used McKay's files \texttt{r35\_13}, \texttt{r36\_14}--\texttt{r36\_17}, \texttt{r37\_21}, \texttt{r37\_22}, \texttt{r38\_27}, \texttt{r39\_35}~\cite{mckay-ramsey}; $\alpha=k-1$ on all of them by Lemma~\ref{lem:ramsey}, and $\theta$ was computed with Clarabel (74 minutes for the $1{,}118{,}436$ graphs on 21 vertices, 88 minutes for the $477{,}142$ graphs on 27 vertices).
@@ -240,17 +269,17 @@ For the $R(3,k)$-graphs we used McKay's files \texttt{r35\_13}, \texttt{r36\_14}
 % TODO: n=12 status — local search from the winners for graphs with triangles beating 0.930021
 
 \section{Conclusion}
-% TODO
+We have pushed the exhaustive maximization of the absolute contextuality gap from eight to eleven vertices, over a billion graphs, with a GPU screening scheme whose every elimination is backed by a dual certificate, and we have found that the answer has a structure: the record graphs are Ramsey $R(3,k)$-graphs, triangle-free graphs whose independence number is held at $k-1$ by $n<R(3,k)$ while their theta number keeps growing. The thirteen-vertex triangle-free maximizer is the Ramsey graph $C_{13}(1,5)$ itself, with a closed-form theta number, and the complete catalogues of $R(3,k)$-graphs yield gap records up to 35 vertices. Two questions are left open: whether the maximizer at twelve vertices --- beyond exhaustive reach at $1.6\times10^{11}$ graphs, though within reach of a more aggressive screen --- is still triangle-free (Conjecture~\ref{conj}), and the value of the linear growth constant $\lim\gap_{\max}(n)/n$, which Proposition~\ref{prop:nu} confines to $[c,\tfrac12]$. For experiments, the new witnesses on nine and ten vertices have exact theta numbers $11/3$ and $3+1/\sqrt2$, realizations in dimension four, and are given explicitly in the appendix and in the accompanying repository.
 
 \section*{Code and data availability}
-All scripts (exact search, GPU screening, Ramsey catalogue processing), the result tables with graph6 identifiers, and the certificates for the record graphs are available at \texttt{<repository URL>}. % TODO
+All scripts (exact search, GPU screening, Ramsey catalogue processing), the result tables with graph6 identifiers, and the certificates for the record graphs are available at \url{https://github.com/danmusetoiu/contextuality-gap}.
 
 \appendix
-\section{Reproduction of the eight-vertex ranking}\label{app:n8}
-% TODO: table matching Tamer et al. Table II (ranks 1-10) from results/n8.csv
+\section{Reproduction of the eight-vertex ranking and graph data}\label{app:n8}\label{app:g6}
+\input{appendix_tables}
 
-\section{graph6 strings and certificates}\label{app:g6}
-% TODO: full graph6 of the R(3,8) record; edge lists of the record graphs; dual certificates
+\section{Certificates}\label{app:cert}
+% TODO: table from certificates/summary.csv (theta primal/dual/SCS, certified lb/ub, rank X, d*, visibility); JSON files in the repository
 
 \begin{thebibliography}{99}
 \bibitem{csw2014} A.~Cabello, S.~Severini, and A.~Winter, Graph-theoretic approach to quantum correlations, Phys. Rev. Lett. \textbf{112}, 040401 (2014).
@@ -269,6 +298,8 @@ All scripts (exact search, GPU screening, Ramsey catalogue processing), the resu
 \bibitem{mckay-ramsey} B.~D.~McKay, Ramsey graphs, \url{https://users.cecs.anu.edu.au/~bdm/data/ramsey.html}.
 \bibitem{nauty} B.~D.~McKay and A.~Piperno, Practical graph isomorphism, II, J. Symbolic Comput. \textbf{60}, 94 (2014).
 \bibitem{clarabel} P.~J.~Goulart and Y.~Chen, Clarabel: An interior-point solver for conic programs with quadratic objectives, arXiv:2405.12762 (2024).
+\bibitem{cojaoghlan2005} A.~Coja-Oghlan, The Lov\'asz number of random graphs, Combin. Probab. Comput. \textbf{14}, 439 (2005).
+\bibitem{frieze1990} A.~M.~Frieze, On the independence number of random graphs, Discrete Math. \textbf{81}, 171 (1990).
 \bibitem{alon} N.~Alon, Lov\'asz, vectors, graphs and codes, in \emph{Building Bridges II}, Bolyai Soc. Math. Stud. \textbf{28} (Springer, 2019). % TODO verify
 \end{thebibliography}
 
