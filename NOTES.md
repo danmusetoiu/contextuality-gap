@@ -106,7 +106,9 @@ record graphs; SCS agrees. rank(X) of the interior-point (max-rank) solution: 4 
 (both top graphs); 5 for tf12 max, C13(1,5), R(3,6) n=16; 6 for R(3,6) n=17 and R(3,7) n=22. Orthogonal representation
 from X = BᵀB (u_i = b_i/|b_i|, ψ ∝ Σ b_i) attains ϑ to 1e-10 with edge overlaps < 1e-10. Visibility v* = (α − n/r)/(ϑ − n/r):
 Quad-C5 0.681, Wagner 0.707, n9 0.529, n10 0.414, n11 0.617, n11 rank-2 0.624, tf12 0.632, C13 0.542, R36-16 0.551,
-R36-17 0.574, R37-22 0.493. Burer–Monteiro minimal-rank search was inconclusive (projection too crude) → paper reports r
+R36-17 0.574, R37-22 0.493. NOTE: smaller v* = MORE robust (least visibility needed). Ranking: n10 (0.414) most robust, then n9, C13, n11,
+Quad-C5, Wagner (0.707) least. An earlier draft sentence claiming the sparse family is more robust was WRONG and was
+corrected 2026-09-24 evening. Burer–Monteiro minimal-rank search was inconclusive (projection too crude) → paper reports r
 as an upper bound on the realization dimension only. Paper draft now 13 pages: Discussion + Appendix C written.
 Public repo: https://github.com/danmusetoiu/contextuality-gap
 

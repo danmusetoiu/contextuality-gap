@@ -35,7 +35,7 @@ winners = {
 
 
 def fig_ladder(path):
-    fig, ax = plt.subplots(figsize=(6.4, 3.6))
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(8.0, 3.4), gridspec_kw={"width_ratios": [1.5, 1]})
     xs = sorted(exhaustive); ax.plot(xs, [exhaustive[x] for x in xs], "o-", color="#1f4e79", label="exhaustive, all connected graphs")
     xs = sorted(tf_exhaustive); ax.plot(xs, [tf_exhaustive[x] for x in xs], "s--", color="#c55a11", label="exhaustive, triangle-free")
     xs = sorted(ramsey); ax.plot(xs, [ramsey[x][1] for x in xs], "^:", color="#548235", label="max over $R(3,k)$-graphs (lower bound)")
@@ -44,7 +44,15 @@ def fig_ladder(path):
             ax.axvline(r - 0.5, color="0.8", lw=0.8, zorder=0)
             ax.text(r - 0.4, 4.3, f"$R(3,{k})={r}$", rotation=90, fontsize=6.5, color="0.4", va="top")
     ax.set_xlabel("number of vertices $n$"); ax.set_ylabel(r"maximum gap $\Delta=\vartheta-\alpha$")
-    ax.set_xlim(4, 36); ax.set_ylim(0, 4.7); ax.grid(alpha=0.25); ax.legend(fontsize=7.5, loc="lower right")
+    ax.set_xlim(4, 36); ax.set_ylim(0, 4.7); ax.grid(alpha=0.25); ax.legend(fontsize=7, loc="lower right")
+    ax.set_title("(a)", fontsize=9, loc="left")
+    # (b) gap per vertex: records and the bounds on c*
+    pts = {**{n: v for n, v in exhaustive.items() if n >= 8}, **{n: v for n, v in tf_exhaustive.items()}, **{n: v[1] for n, v in ramsey.items()}}
+    xs = sorted(pts); ax2.plot(xs, [pts[x] / x for x in xs], "D-", ms=4, color="#1f4e79", label=r"record $\Delta/n$")
+    ax2.axhline(0.5, color="0.5", ls="--", lw=1); ax2.text(5, 0.47, r"upper bound $c^*\leq 1/2$", fontsize=7, color="0.4")
+    ax2.axhline(4.410586 / 35, color="#548235", ls=":", lw=1); ax2.text(5, 4.410586 / 35 + 0.012, r"$c^*\geq 0.126$", fontsize=7, color="#548235")
+    ax2.set_xlabel("number of vertices $n$"); ax2.set_ylabel(r"$\Delta_{\max}/n$ (records)"); ax2.set_ylim(0, 0.55); ax2.set_xlim(4, 36)
+    ax2.grid(alpha=0.25); ax2.set_title("(b)", fontsize=9, loc="left"); ax2.legend(fontsize=7, loc="center right")
     fig.tight_layout(); fig.savefig(path); plt.close(fig)
 
 
