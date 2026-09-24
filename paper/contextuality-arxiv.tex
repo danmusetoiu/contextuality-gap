@@ -179,13 +179,26 @@ By Lemma~\ref{lem:ramsey}, a triangle-free graph with $\alpha\le k-1$ is an $R(3
 \end{itemize}
 The mechanism is transparent: $\theta$ grows with $n$ (roughly like $\sqrt n$ for sparse graphs), whereas $\alpha$ is bounded below by Ramsey theory and jumps by one at every $n=R(3,k)$. Records are therefore expected just before the jumps, at $n=R(3,k)-1$, and the gap should \emph{decrease} within the triangle-free class right after a jump.
 
-\subsection{The theta number of $C_{13}(1,5)$}
+\subsection{Circulant Ramsey-critical graphs and closed forms}\label{sec:circ}
 
-For an edge-transitive graph the Lov\'asz bound $\theta(G)\ge -n\lambda_{\min}/(\lambda_{\max}-\lambda_{\min})$ is attained~\cite{lovasz1979}. The circulant $C_{13}(1,5)$ has eigenvalues $\lambda_j=2\cos(2\pi j/13)+2\cos(10\pi j/13)$, $j=0,\dots,12$, so $\lambda_{\max}=4$, $\lambda_{\min}=2\cos(8\pi/13)-2\cos(\pi/13)=-2.651093\ldots$ (multiplicity 4), and
-\begin{equation}
-\theta\bigl(C_{13}(1,5)\bigr)=\frac{13\,(-\lambda_{\min})}{4-\lambda_{\min}}=5.181736625\ldots,\qquad \gap=1.181736625\ldots,
+Two of the Ramsey-critical vertex counts carry circulant critical graphs, and for those the theta number can be computed in closed form. For a vertex-transitive graph the optimal $X$ in~\eqref{eq:theta-primal} can be taken invariant under the automorphism group~\cite{lovasz1979}; for a circulant $C_n(S)$ this reduces the SDP to a linear program over the Fourier coefficients of a symmetric vector $x\in\mathbb R^n$: $\theta=n\sum_j x_j$ maximized subject to $x_0=1/n$, $x_s=0$ for $s\in\pm S$, and $\hat x_k=\sum_j x_j\cos(2\pi jk/n)\ge0$ for all $k$. Its optimum is therefore an algebraic number in the maximal real subfield of $\mathbb Q(\zeta_n)$. When the graph is moreover edge-transitive, the Lov\'asz--Hoffman bound is attained and the value is explicit~\cite{lovasz1979}:
+\begin{equation}\label{eq:hoffman}
+\theta(G)=\frac{n\,(-\lambda_{\min})}{\lambda_{\max}-\lambda_{\min}}\qquad(G\ \text{edge-transitive}).
 \end{equation}
-in agreement with the SDP value to nine digits. % TODO: express lambda_min in radicals / minimal polynomial
+
+\begin{proposition}\label{prop:circ}
+\begin{enumerate}
+\item[(i)] The unique $R(3,5)$-critical graph is the circulant $C_{13}(1,5)$; it is edge-transitive, since the multiplier group $\{\pm1,\pm5\}\subset\mathbb Z_{13}^\times$ acts transitively on the connection set $\{\pm1,\pm5\}$ ($5^2\equiv-1$). Its eigenvalues are $\lambda_j=2\cos(2\pi j/13)+2\cos(10\pi j/13)$, so $\lambda_{\max}=4$, $\lambda_{\min}=2\cos(8\pi/13)-2\cos(\pi/13)$ (multiplicity 4) and
+\begin{equation}
+\theta\bigl(C_{13}(1,5)\bigr)=\frac{13\,(-\lambda_{\min})}{4-\lambda_{\min}}=5.181736625\ldots,\qquad \gap_{\max}^{\rm tf}(13)=\theta-4=1.181736625\ldots
+\end{equation}
+\item[(ii)] The unique $R(3,9)$-critical graph on 35 vertices is the circulant $C_{35}(1,7,11,16)$ of Kalbfleisch~\cite{kalbfleisch1966}; it is vertex- but not edge-transitive, and $\theta=12.410586\ldots$ is the optimum of the Fourier linear program (the bound~\eqref{eq:hoffman} gives $12.4979$ and is not attained). Hence $\gap_{\max}(35)\ge 4.410586$. % TODO: closed form from the LP's active set
+\item[(iii)] There is no circulant $R(3,k)$-critical graph on $R(3,k)-1$ vertices for $k=6,7,8$ ($n=17,22,27$); the circulant $R(3,k)$-graphs that exist on $16$ and $21$ vertices are not the gap maximizers of their families ($1.1648$ vs $1.4654$; $1.9768$ vs $2.1413$).
+\end{enumerate}
+\end{proposition}
+The scan behind (iii) is exhaustive over connection sets (all $2^{\lfloor n/2\rfloor}$ symmetric sets, triangle-freeness, $\alpha$ by clique search on the complement); the identifications in (i) and (ii) are by isomorphism test against McKay's catalogues.
+
+We note explicitly what Section~\ref{sec:ramsey} does and does not establish. It establishes that $\alpha$ of the record graphs is dictated by Ramsey numbers (Lemma~\ref{lem:ramsey}), it identifies every computed maximizer with a Ramsey graph, and for the two circulant cases it gives $\theta$ in closed form. It does not yet provide a theorem of the form $\gap_{\max}(R(3,k)-1)\ge f(k)$ with $f$ growing: the general lower bounds on $\theta$ of triangle-free graphs that we are aware of (through $\theta(G)\theta(\bar G)\ge n$ and $\chi(G)=O(\sqrt n)$) are of order $\sqrt n$, below $k-1\approx\sqrt{n\log n}$ at $n=R(3,k)-1$, and so do not even certify positivity. Closing this gap --- a lower bound on $\theta$ for triangle-free graphs of small independence number --- is the natural next step, and the data of Table~\ref{tab:ramsey} suggest $\gap_{\max}(R(3,k)-1)\approx 0.12\,(R(3,k)-1)$.
 
 \subsection{A ladder of lower bounds up to $n=35$}
 
@@ -224,10 +237,10 @@ The $R(3,6)$-graphs on 13 vertices ($275{,}086$ graphs, for which $\alpha\in\{4,
 Within the triangle-free class the maximum gap is \emph{not} monotone: it falls from $1.1817$ at $n=13$ to $1.0724$ at $n=14$, exactly as predicted by the jump of $\alpha$ at $R(3,5)=14$, and recovers from $n=15$ on. The global $\gap_{\max}(n)$ is monotone by Lemma~\ref{lem:mono}, but the graphs realizing the monotone extension (a record graph plus universal vertices) are degenerate as witnesses. We are led to:
 
 \begin{conjecture}\label{conj}
-For every $n\ge 11$, $\gap_{\max}(n)$ is attained by a triangle-free graph, and for $n=R(3,k)-1$ by an $R(3,k)$-critical graph.
+For $n=R(3,k)-1$ with $k\ge5$, $\gap_{\max}(n)$ is attained by an $R(3,k)$-critical graph; more generally, from $n=11$ on the maximizer is triangle-free with the least independence number that Ramsey theory allows.
 \end{conjecture}
 
-The conjecture is proved for $n=11$ (this paper) and false for $n=9,10$, where triangles are needed to keep $\alpha=3$; it is consistent with everything we computed for $n\le 13$. A brute-force test at $n=12$ would require $1.64\times10^{11}$ graphs.
+We state this as a conjecture with the appropriate caution. The evidence is: the exhaustive result at $n=11$ (the only value where the statement is verified over all graphs), the exhaustive triangle-free results at $n=12,13$, the fact that the mechanism is forced for the two graph invariants separately ($\alpha$ by Ramsey theory, $\theta$ by its growth with $n$ for sparse graphs), and the failure of the ``previous winner plus a vertex'' lineages. The evidence against unrestricted extrapolation is equally clear: for $n=9,10$ the maximizers contain triangles, because no triangle-free graph on nine or more vertices has $\alpha=3$, so an $R(3,4)$-type structure with one or four triangles wins. What the conjecture does \emph{not} say is that Ramsey-critical graphs dominate between the critical vertex counts; at $n=14$ the triangle-free maximum drops (Section~\ref{sec:theory}) and the global maximum is attained only by the degenerate extension of $C_{13}(1,5)$. A brute-force test at $n=12$ would require $1.64\times10^{11}$ graphs; a local search over graphs with triangles at $n=12$ (Section~\ref{sec:discussion}) found nothing above the triangle-free record.
 
 \subsection{What can be proved: a linear upper bound and linear growth}\label{sec:theory}
 
@@ -298,6 +311,7 @@ All scripts (exact search, GPU screening, Ramsey catalogue processing), the resu
 \bibitem{tamer2026} U.~Tamer, \"O.~E.~M\"ustecapl{\i}o\u{g}lu, A.~Dizdar, and Z.~Gedik, The Quad-$C_5$ graph: maximum contextuality gap on eight vertices, arXiv:2605.12828 (2026).
 \bibitem{muller2026} A.~Muller and M.~Saniga, Automated search for highly contextual Kochen--Specker proofs, arXiv:2609.19862 (2026).
 \bibitem{kcbs2008} A.~A.~Klyachko, M.~A.~Can, S.~Binicio\u{g}lu, and A.~S.~Shumovsky, Simple test for hidden variables in spin-1 systems, Phys. Rev. Lett. \textbf{101}, 020403 (2008).
+\bibitem{kalbfleisch1966} J.~G.~Kalbfleisch, Chromatic graphs and Ramsey's theorem, Ph.D. thesis, University of Waterloo (1966).
 \bibitem{radziszowski} S.~P.~Radziszowski, Small Ramsey numbers, Electron. J. Combin., Dynamic Survey DS1 (revised regularly).
 \bibitem{goedgebeur2013} J.~Goedgebeur and S.~P.~Radziszowski, New computational upper bounds for Ramsey numbers $R(3,k)$, Electron. J. Combin. \textbf{20}, P30 (2013).
 \bibitem{mckay-ramsey} B.~D.~McKay, Ramsey graphs, \url{https://users.cecs.anu.edu.au/~bdm/data/ramsey.html}.
