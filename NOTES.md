@@ -110,6 +110,18 @@ R36-17 0.574, R37-22 0.493. Burer–Monteiro minimal-rank search was inconclusiv
 as an upper bound on the realization dimension only. Paper draft now 13 pages: Discussion + Appendix C written.
 Public repo: https://github.com/danmusetoiu/contextuality-gap
 
+## n=12 local search with triangles (`localsearch12.py`, 90 min, 2026-09-24 evening)
+1,425,556 distinct 12-vertex graphs evaluated (exact ϑ, α); best overall = tf record 0.930021; best WITH a triangle
+0.866462 (1 triangle, 21 edges, α=4). Evidence for Conjecture at n=12. Results: `results/localsearch12.csv` (top 5000).
+
+## Circulant Ramsey-critical scan (`circulant_scan.py`)
+Exhaustive over connection sets: n=13: C13(1,5) only (edge-transitive: multipliers {±1,±5}, 5²≡−1 → Lovász–Hoffman formula
+attained, closed form proven); n=16: one circulant R(3,6) (gap 1.1648 < family max 1.4654); n=17, 22, 27: NONE;
+n=21: two non-isomorphic circulant R(3,7) (gaps 1.9768, 1.7560 < 2.1413); n=35: C35(1,7,11,16) = Kalbfleisch graph =
+the unique R(3,9)-critical graph (isomorphism confirmed), vertex- but not edge-transitive: ϑ = 12.410586 (LP optimum)
+< Hoffman ratio 12.4979. Exact closed form for ϑ(C35) still TODO (sympy symbolic solve hung; do LP active set + linear
+solve in Q(ζ35)^+).
+
 ## Open items
 - n=10 own run (`results/n10.csv`) → cross-check vs table, then n=11: ~1e9 graphs. Clarabel path ≈ 2.5–4k g/s ≈ 3–4 days
   → design a GPU batched screen (rigorous dual upper bound on ϑ, prune if bound − α < best) + Clarabel re-verification.
