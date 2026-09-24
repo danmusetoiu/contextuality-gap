@@ -21,6 +21,7 @@
 \newtheorem{proposition}{Proposition}
 \newtheorem{conjecture}{Conjecture}
 \newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
 \renewcommand{\theta}{\vartheta}
 \newcommand{\gap}{\Delta}
 \newcommand{\g}[1]{\texttt{#1}}
@@ -35,7 +36,7 @@
 \maketitle
 
 \begin{abstract}
-In the exclusivity-graph approach to contextuality, a noncontextuality inequality is a graph $G$, its noncontextual bound is the independence number $\alpha(G)$ and its quantum bound is the Lov\'asz number $\theta(G)$. The absolute contextuality gap $\gap(G)=\theta(G)-\alpha(G)$ was recently maximized exhaustively over the $11{,}117$ connected graphs on eight vertices (Quad-$C_5$, $\gap=0.46784$). We extend the exhaustive search to nine, ten and eleven vertices --- $261{,}080$, $11{,}716{,}571$ and $1{,}006{,}700{,}565$ connected graphs respectively --- and find $\gap_{\max}=2/3$ (with $\theta=11/3$), $\gap_{\max}=1/\sqrt2$ (with $\theta=3+1/\sqrt2$) and $\gap_{\max}=0.774889$. The search over $10^9$ graphs was made feasible on a single consumer GPU by a rigorous screening scheme: for each graph a feasible point of the dual semidefinite program certifies an upper bound on $\theta$, and only graphs whose certified bound can beat the running record are solved exactly. The maximizers are not a nested family, and at eleven vertices a regime change occurs: the dense, Wagner-based maximizers with $\alpha=3$ are overtaken by sparse triangle-free graphs with $\alpha=4$. We explain this through Ramsey theory: triangle-free graphs with $\alpha\le k-1$ are exactly the $R(3,k)$-graphs, and every record graph we find is one --- Quad-$C_5$ and the Wagner graph are $R(3,4)$-graphs, the eleven-vertex maximizer is an $R(3,5)$-graph, and the triangle-free maximizer on thirteen vertices is the unique $R(3,5)$-critical graph $C_{13}(1,5)$, with $\theta=13(-\lambda_{\min})/(\lambda_{\max}-\lambda_{\min})=5.181737$ in closed form. Computing $\theta$ over McKay's complete catalogues of $R(3,k)$-graphs yields a ladder of lower bounds on $\gap_{\max}(n)$ up to $n=35$ ($\gap\ge 4.4106$ from the unique $R(3,9)$-critical graph). We release all code, graph6 identifiers and certificates.
+In the exclusivity-graph approach to contextuality, a noncontextuality inequality is a graph $G$, its noncontextual bound is the independence number $\alpha(G)$ and its quantum bound is the Lov\'asz number $\theta(G)$. The absolute contextuality gap $\gap(G)=\theta(G)-\alpha(G)$ was recently maximized exhaustively over the $11{,}117$ connected graphs on eight vertices (Quad-$C_5$, $\gap=0.46784$). We extend the exhaustive search to nine, ten and eleven vertices --- $261{,}080$, $11{,}716{,}571$ and $1{,}006{,}700{,}565$ connected graphs respectively --- and find $\gap_{\max}=2/3$ (with $\theta=11/3$), $\gap_{\max}=1/\sqrt2$ (with $\theta=3+1/\sqrt2$) and $\gap_{\max}=0.774889$. The search over $10^9$ graphs was made feasible on a single consumer GPU by a rigorous screening scheme: for each graph a feasible point of the dual semidefinite program certifies an upper bound on $\theta$, and only graphs whose certified bound can beat the running record are solved exactly. The maximizers are not a nested family, and at eleven vertices a regime change occurs: the dense, Wagner-based maximizers with $\alpha=3$ are overtaken by sparse triangle-free graphs with $\alpha=4$. We explain this through Ramsey theory: triangle-free graphs with $\alpha\le k-1$ are exactly the $R(3,k)$-graphs, and every record graph we find is one --- Quad-$C_5$ and the Wagner graph are $R(3,4)$-graphs, the eleven-vertex maximizer is an $R(3,5)$-graph, and the triangle-free maximizer on thirteen vertices is the unique $R(3,5)$-critical graph $C_{13}(1,5)$, with $\theta=13(-\lambda_{\min})/(\lambda_{\max}-\lambda_{\min})=5.181737$ in closed form. Computing $\theta$ over McKay's complete catalogues of $R(3,k)$-graphs yields a ladder of lower bounds on $\gap_{\max}(n)$ up to $n=35$ ($\gap\ge 4.4106$ from the unique $R(3,9)$-critical graph, Kalbfleisch's circulant $C_{35}(1,7,11,16)$). On the theoretical side we prove $\gap(G)\le\nu(G)\le n/2$ for every graph, that the gap is superadditive so that $c^*=\lim\gap_{\max}(n)/n$ exists with $0.126\le c^*\le1/2$, and consequently $\gap_{\max}(R(3,k)-1)=\Omega(k^2/\ln k)$. We release all code, graph6 identifiers and certificates.
 \end{abstract}
 
 \noindent\textbf{Keywords:} quantum contextuality, exclusivity graphs, Lov\'asz theta number, independence number, Ramsey graphs, semidefinite programming, exhaustive graph search
@@ -51,6 +52,7 @@ Two questions follow. What are the maximizers for more vertices, and is there st
 \item \textbf{Exhaustive maxima for $n=9,10,11$.} $\gap_{\max}(9)=2/3$ exactly, $\gap_{\max}(10)=1/\sqrt2$ exactly, $\gap_{\max}(11)=0.774889$ (Section~\ref{sec:results}). The eleven-vertex search covers all $1{,}006{,}700{,}565$ connected graphs and is, to our knowledge, the first exhaustive computation of a Lov\'asz-number extremum at this scale.
 \item \textbf{A rigorous GPU screening method} (Section~\ref{sec:method}): dual-feasible points of the theta SDP, optimized in large batches on a consumer GPU, certify upper bounds on $\theta$ that eliminate all but a hundred graphs out of $10^9$; the survivors are solved exactly. The method is validated against every known answer ($n\le 10$) with zero misses.
 \item \textbf{The Ramsey structure of the maximizers} (Section~\ref{sec:ramsey}). All record graphs are $R(3,k)$-graphs, i.e.\ triangle-free graphs with $\alpha\le k-1$ on fewer than $R(3,k)$ vertices; the thirteen-vertex triangle-free maximizer is the unique $R(3,5)$-critical graph $C_{13}(1,5)$, whose theta number has a closed form. Ramsey numbers thus pin $\alpha$ while $\theta$ keeps growing, and $\gap_{\max}(n)$ jumps at $n=R(3,k)-1$. Computing $\theta$ over the complete catalogues of $R(3,k)$-graphs gives a ladder of lower bounds up to $n=35$.
+\item \textbf{Growth} (Section~\ref{sec:theory}). $\gap(G)\le\nu(G)\le n/2$ for every graph (Proposition~\ref{prop:nu}); the gap is superadditive, so $c^*=\lim\gap_{\max}(n)/n$ exists and every record graph bounds it from below, $0.126\le c^*\le\tfrac12$ (Proposition~\ref{prop:fekete}); hence $\gap_{\max}(R(3,k)-1)=\Omega(k^2/\ln k)$ (Corollary~\ref{cor:ramsey}).
 \end{enumerate}
 
 \section{Preliminaries}\label{sec:prelim}
@@ -253,7 +255,31 @@ For every graph $G$ on $n$ vertices, $\gap(G)\le\nu(G)\le\lfloor n/2\rfloor$, wh
 By the sandwich theorem $\theta(G)\le\bar\chi(G)$, the clique cover number~\cite{knuth1994}. Covering the $2\nu$ vertices of a maximum matching by its $\nu$ edges and the remaining vertices by singletons gives $\bar\chi(G)\le n-\nu$. By the Tutte--Berge formula there is a set $S$ with $n-2\nu=\mathrm{odd}(G-S)-|S|$; one vertex from each odd component of $G-S$ forms an independent set, so $\alpha(G)\ge\mathrm{odd}(G-S)\ge n-2\nu$. Hence $\gap=\theta-\alpha\le(n-\nu)-(n-2\nu)=\nu$.
 \end{proof}
 
-The bound is far from tight for small $n$ ($\nu=5$ versus $\gap_{\max}=0.775$ at $n=11$), but it has the right order: $\gap_{\max}(n)$ grows linearly. For the binomial random graph $G(n,d/n)$ with fixed $d$, $\theta=\Theta(\sqrt{n/p})=\Theta(n/\sqrt d)$ with high probability~\cite{cojaoghlan2005}, while $\alpha\approx(2n/d)\ln d$~\cite{frieze1990}; so $\gap\ge c(d)\,n$ with $c(d)>0$ for $d$ large enough, i.e.\ $\gap_{\max}(n)=\Theta(n)$. Heuristically $2n/\sqrt d-(2n/d)\ln d$ is maximal near $d\approx 15$--$20$ with $c\approx0.12$, and our records already climb towards such a slope: $\gap_{\max}(n)/n=0.07,\ 0.09,\ 0.11,\ 0.13$ at $n=11,13,22,35$ (the last three being the Ramsey lower bounds of Table~\ref{tab:ramsey}). The value of $c^*=\lim\gap_{\max}(n)/n\in[c,\tfrac12]$, and whether the maximizers stay triangle-free, are open. % TODO: verify constants in cojaoghlan2005 / frieze1990 and tighten
+The bound is far from tight for small $n$ ($\nu=5$ versus $\gap_{\max}=0.775$ at $n=11$), but it has the right order, and the matching lower bound is elementary: the gap is superadditive, so every record graph is a certificate of linear growth.
+
+\begin{proposition}\label{prop:fekete}
+Let $f(n)$ be the maximum of $\gap(G)$ over all graphs (connected or not) on $n$ vertices. Then $f(m+n)\ge f(m)+f(n)$, the limit
+\[
+c^*=\lim_{n\to\infty}\frac{\gap_{\max}(n)}{n}=\lim_{n\to\infty}\frac{f(n)}{n}=\sup_{G}\frac{\gap(G)}{|V(G)|}
+\]
+exists, and for every graph $H$ on $h$ vertices and every $n\ge1$,
+\[
+\gap_{\max}(n)\ \ge\ \Bigl\lfloor\frac{n-1}{h}\Bigr\rfloor\,\gap(H).
+\]
+In particular, with $H=C_{35}(1,7,11,16)$,
+\begin{equation}\label{eq:cstar}
+0.1260\ \le\ \frac{\gap(C_{35}(1,7,11,16))}{35}\ \le\ c^*\ \le\ \frac12,\qquad \gap_{\max}(n)\ \ge\ 0.126\,n-4.6\quad(n\ge1).
+\end{equation}
+\end{proposition}
+\begin{proof}
+Both $\theta$ and $\alpha$ are additive over disjoint unions~\cite{knuth1994}, so $\gap$ is additive and $f$ is superadditive; $f(n)\le n/2$ by Proposition~\ref{prop:nu}, so Fekete's lemma gives $\lim f(n)/n=\sup f(n)/n$. Adding a vertex adjacent to everything changes neither $\theta$ nor $\alpha$ (proof of Lemma~\ref{lem:mono}) and makes the graph connected, hence $f(n-1)\le\gap_{\max}(n)\le f(n)$ and the two limits coincide. For the explicit bound take $\lfloor (n-1)/h\rfloor$ disjoint copies of $H$ and fill up with universal vertices. The numbers in~\eqref{eq:cstar} are those of Table~\ref{tab:ramsey}.
+\end{proof}
+
+Proposition~\ref{prop:fekete} is what Figure~\ref{fig:ladder} shows: the slope of the Ramsey ladder is a lower bound on $c^*$, and each new record graph with a larger ratio $\gap/n$ raises it. Our data give $\gap/n=0.091,\ 0.095,\ 0.109,\ 0.113,\ 0.126$ for the record graphs on $13,17,22,27,35$ vertices, so the best current bound comes from the largest Ramsey-critical graph, and the sequence is still increasing. On the Ramsey side, combining~\eqref{eq:cstar} with Lemma~\ref{lem:mono} and the lower bound $R(3,k)\ge(\tfrac14-o(1))k^2/\ln k$~\cite{bohman-keevash,fgm} gives
+\begin{corollary}\label{cor:ramsey}
+$\gap_{\max}\bigl(R(3,k)-1\bigr)\ \ge\ 0.126\,R(3,k)-4.8\ =\ \Omega\!\bigl(k^2/\ln k\bigr)$.
+\end{corollary}
+This explains the growth of the ladder in Table~\ref{tab:ramsey} through the critical vertex counts; it does not explain why the maximizers at those counts are the Ramsey-critical graphs themselves, which remains Conjecture~\ref{conj}. Two heuristics point to a limit strictly between the bounds: for the binomial random graph $G(n,d/n)$, $\theta=\Theta(n/\sqrt d)$~\cite{cojaoghlan2005} and $\alpha\approx(2n/d)\ln d$~\cite{frieze1990}, which suggests $\gap/n\approx 0.12$ near $d\approx15$--$20$ and hence $c^*\gtrsim0.12$ from a second, non-Ramsey family; and the upper bound $\nu\le n/2$ is attained only when $\theta=\bar\chi$ and $\alpha=n-2\nu$ simultaneously, which no graph in our tables approaches. Determining $c^*$, and whether the maximizers stay triangle-free, are the natural open problems.
 
 \section{Methods}\label{sec:method}
 
@@ -316,6 +342,8 @@ All scripts (exact search, GPU screening, Ramsey catalogue processing), the resu
 \bibitem{mckay-ramsey} B.~D.~McKay, Ramsey graphs, \url{https://users.cecs.anu.edu.au/~bdm/data/ramsey.html}.
 \bibitem{nauty} B.~D.~McKay and A.~Piperno, Practical graph isomorphism, II, J. Symbolic Comput. \textbf{60}, 94 (2014).
 \bibitem{clarabel} P.~J.~Goulart and Y.~Chen, Clarabel: An interior-point solver for conic programs with quadratic objectives, arXiv:2405.12762 (2024).
+\bibitem{bohman-keevash} T.~Bohman and P.~Keevash, Dynamic concentration of the triangle-free process, Random Structures Algorithms \textbf{58}, 221 (2021).
+\bibitem{fgm} G.~Fiz Pontiveros, S.~Griffiths, and R.~Morris, The triangle-free process and the Ramsey number $R(3,k)$, Mem. Amer. Math. Soc. \textbf{263}, no.~1274 (2020).
 \bibitem{cojaoghlan2005} A.~Coja-Oghlan, The Lov\'asz number of random graphs, Combin. Probab. Comput. \textbf{14}, 439 (2005).
 \bibitem{frieze1990} A.~M.~Frieze, On the independence number of random graphs, Discrete Math. \textbf{81}, 171 (1990).
 \bibitem{alon} N.~Alon, Lov\'asz, vectors, graphs and codes, in \emph{Building Bridges II}, Bolyai Soc. Math. Stud. \textbf{28} (Springer, 2019). % TODO verify
