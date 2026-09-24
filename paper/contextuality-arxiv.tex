@@ -1,0 +1,275 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\DisableLigatures[?,!,`,']{encoding = *, family = tt* }
+\usepackage{upquote}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\renewcommand{\theta}{\vartheta}
+\newcommand{\gap}{\Delta}
+\newcommand{\g}[1]{\texttt{#1}}
+
+\title{Maximum Contextuality Gap up to Eleven Vertices\\and the Ramsey Structure of Its Maximizers}
+\author{Dan Mu\textcommabelow{s}etoiu\\
+\texttt{dan.musetoiu@gmail.com}} % TODO affiliation
+\date{September 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+In the exclusivity-graph approach to contextuality, a noncontextuality inequality is a graph $G$, its noncontextual bound is the independence number $\alpha(G)$ and its quantum bound is the Lov\'asz number $\theta(G)$. The absolute contextuality gap $\gap(G)=\theta(G)-\alpha(G)$ was recently maximized exhaustively over the $11{,}117$ connected graphs on eight vertices (Quad-$C_5$, $\gap=0.46784$). We extend the exhaustive search to nine, ten and eleven vertices --- $261{,}080$, $11{,}716{,}571$ and $1{,}006{,}700{,}565$ connected graphs respectively --- and find $\gap_{\max}=2/3$ (with $\theta=11/3$), $\gap_{\max}=1/\sqrt2$ (with $\theta=3+1/\sqrt2$) and $\gap_{\max}=0.774889$. The search over $10^9$ graphs was made feasible on a single consumer GPU by a rigorous screening scheme: for each graph a feasible point of the dual semidefinite program certifies an upper bound on $\theta$, and only graphs whose certified bound can beat the running record are solved exactly. The maximizers are not a nested family, and at eleven vertices a regime change occurs: the dense, Wagner-based maximizers with $\alpha=3$ are overtaken by sparse triangle-free graphs with $\alpha=4$. We explain this through Ramsey theory: triangle-free graphs with $\alpha\le k-1$ are exactly the $R(3,k)$-graphs, and every record graph we find is one --- Quad-$C_5$ and the Wagner graph are $R(3,4)$-graphs, the eleven-vertex maximizer is an $R(3,5)$-graph, and the triangle-free maximizer on thirteen vertices is the unique $R(3,5)$-critical graph $C_{13}(1,5)$, with $\theta=13(-\lambda_{\min})/(\lambda_{\max}-\lambda_{\min})=5.181737$ in closed form. Computing $\theta$ over McKay's complete catalogues of $R(3,k)$-graphs yields a ladder of lower bounds on $\gap_{\max}(n)$ up to $n=35$ ($\gap\ge 4.4106$ from the unique $R(3,9)$-critical graph). We release all code, graph6 identifiers and certificates.
+\end{abstract}
+
+\noindent\textbf{Keywords:} quantum contextuality, exclusivity graphs, Lov\'asz theta number, independence number, Ramsey graphs, semidefinite programming, exhaustive graph search
+
+\section{Introduction}
+
+Cabello, Severini and Winter (CSW) showed that any noncontextuality (NC) inequality of the form $\sum_i P(e_i)\le\alpha$ can be encoded by an \emph{exclusivity graph} $G$ whose vertices are the events $e_i$ and whose edges join mutually exclusive events; the maximum of the left-hand side over noncontextual models is the independence number $\alpha(G)$, and its maximum over quantum models is the Lov\'asz theta number $\theta(G)$~\cite{csw2014}. The gap between the two numbers is therefore a graph invariant that measures how contextual an inequality can be. Two natural figures of merit have been studied: the ratio $\theta/\alpha$, used to identify experimentally accessible witnesses~\cite{amselem2012,canas2016} and as a dimension witness~\cite{ray2021}, and the absolute gap $\gap(G)=\theta(G)-\alpha(G)$, whose maximization over all connected graphs on eight vertices was recently carried out by Tamer et al.~\cite{tamer2026}. Their exhaustive search over the $11{,}117$ graphs identified a sparse ten-edge graph, Quad-$C_5$, with $\gap=0.46784$, beating the Wagner graph ($\gap=\sqrt2-1$).
+
+Two questions follow. What are the maximizers for more vertices, and is there structure behind them? Here we answer the first question exhaustively for $n=9,10,11$ and, for the triangle-free class, for $n=12,13$; and we answer the second by exhibiting a Ramsey-theoretic mechanism.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item \textbf{Exhaustive maxima for $n=9,10,11$.} $\gap_{\max}(9)=2/3$ exactly, $\gap_{\max}(10)=1/\sqrt2$ exactly, $\gap_{\max}(11)=0.774889$ (Section~\ref{sec:results}). The eleven-vertex search covers all $1{,}006{,}700{,}565$ connected graphs and is, to our knowledge, the first exhaustive computation of a Lov\'asz-number extremum at this scale.
+\item \textbf{A rigorous GPU screening method} (Section~\ref{sec:method}): dual-feasible points of the theta SDP, optimized in large batches on a consumer GPU, certify upper bounds on $\theta$ that eliminate all but a hundred graphs out of $10^9$; the survivors are solved exactly. The method is validated against every known answer ($n\le 10$) with zero misses.
+\item \textbf{The Ramsey structure of the maximizers} (Section~\ref{sec:ramsey}). All record graphs are $R(3,k)$-graphs, i.e.\ triangle-free graphs with $\alpha\le k-1$ on fewer than $R(3,k)$ vertices; the thirteen-vertex triangle-free maximizer is the unique $R(3,5)$-critical graph $C_{13}(1,5)$, whose theta number has a closed form. Ramsey numbers thus pin $\alpha$ while $\theta$ keeps growing, and $\gap_{\max}(n)$ jumps at $n=R(3,k)-1$. Computing $\theta$ over the complete catalogues of $R(3,k)$-graphs gives a ladder of lower bounds up to $n=35$.
+\end{enumerate}
+
+\section{Preliminaries}\label{sec:prelim}
+
+Throughout, $G=(V,E)$ is a simple graph on $n$ vertices, interpreted as an exclusivity graph. The independence number $\alpha(G)$ is the size of a largest set of pairwise non-adjacent vertices. The Lov\'asz number~\cite{lovasz1979} can be written as the semidefinite program
+\begin{equation}\label{eq:theta-primal}
+\theta(G)=\max\bigl\{\langle J,X\rangle : \operatorname{tr}X=1,\ X_{ij}=0\ \forall\,ij\in E,\ X\succeq 0\bigr\},
+\end{equation}
+where $J$ is the all-ones matrix, with the dual
+\begin{equation}\label{eq:theta-dual}
+\theta(G)=\min\bigl\{\lambda_{\max}(J+Y) : Y=Y^{\mathsf T},\ Y_{ij}=0\ \forall\, ij\notin E,\ Y_{ii}=0\bigr\}.
+\end{equation}
+The sandwich theorem gives $\alpha(G)\le\theta(G)\le\alpha^*(G)$, where $\alpha^*$ is the fractional packing number~\cite{knuth1994}. In the CSW framework $\alpha(G)$ and $\theta(G)$ are respectively the noncontextual and the quantum maximum of $\sum_{i\in V}P(e_i)$ over all correlation experiments whose exclusivity graph is $G$~\cite{csw2014}; quantum theory violates the NC inequality iff $\theta(G)>\alpha(G)$, which happens iff $G$ contains an induced odd cycle of length at least five or the complement of one~\cite{cabello2013basic}. We study the \emph{absolute contextuality gap}
+\begin{equation}
+\gap(G)=\theta(G)-\alpha(G),\qquad \gap_{\max}(n)=\max\{\gap(G): G \text{ connected}, |V(G)|=n\}.
+\end{equation}
+Restricting to connected graphs loses nothing for the maximum: $\theta$ and $\alpha$ are both additive over disjoint unions, so a disconnected graph never beats its best component plus isolated vertices, and isolated vertices contribute equally to $\theta$ and $\alpha$.
+
+Two elementary facts will be used repeatedly.
+
+\begin{lemma}[Monotonicity]\label{lem:mono}
+$\gap_{\max}(n+1)\ge\gap_{\max}(n)$.
+\end{lemma}
+\begin{proof}
+Add a vertex adjacent to all vertices of a maximizer $G$. Independent sets are unchanged, so $\alpha$ is unchanged. In~\eqref{eq:theta-primal} the new row and column of $X$ must vanish off the diagonal, so $X=\operatorname{diag}(X',s)$ with $\operatorname{tr}X'=1-s$ and $\langle J,X\rangle=(1-s)\theta(G)+s\le\theta(G)$; hence $\theta$ is unchanged as well.
+\end{proof}
+
+\begin{lemma}[Ramsey pins $\alpha$]\label{lem:ramsey}
+Let $R(3,k)$ denote the Ramsey number. A triangle-free graph on $n\ge R(3,k-1)$ vertices has $\alpha\ge k-1$; a triangle-free graph on $n<R(3,k)$ vertices can have $\alpha=k-1$, and the graphs achieving it are exactly the $R(3,k)$-graphs on $n$ vertices.
+\end{lemma}
+\begin{proof}
+Immediate from the definition of $R(3,k)$ as the least $n$ such that every graph on $n$ vertices contains a triangle or an independent set of size $k$.
+\end{proof}
+
+The relevant values are $R(3,4)=9$, $R(3,5)=14$, $R(3,6)=18$, $R(3,7)=23$, $R(3,8)=28$, $R(3,9)=36$~\cite{radziszowski}. Complete catalogues of $R(3,k)$-graphs for $k\le 9$ are available from McKay~\cite{mckay-ramsey,goedgebeur2013}.
+
+\section{Exhaustive results}\label{sec:results}
+
+\subsection{All connected graphs, $n\le 11$}
+
+Table~\ref{tab:main} lists the maximizers of $\gap$ over all connected graphs for $n=5,\dots,11$; the values for $n\le 8$ reproduce~\cite{tamer2026} exactly (including the full top-ten ranking for $n=8$, Appendix~\ref{app:n8}). Figure~\ref{fig:winners} draws the record graphs.
+
+\begin{table}[t]
+\centering\small
+\caption{Maximum contextuality gap over all connected graphs on $n$ vertices. Graphs are identified by their graph6 string~\cite{nauty}. $d^*$ is the rank of the optimal primal matrix $X$ in~\eqref{eq:theta-primal}, i.e.\ the dimension of the Lov\'asz orthonormal representation attaining $\theta$.}
+\label{tab:main}
+\begin{tabular}{rrlrrrrl}
+\toprule
+$n$ & \#graphs & graph6 & $|E|$ & $\alpha$ & $\theta$ & $\gap_{\max}(n)$ & remarks \\
+\midrule
+5 & 21 & $C_5$ & 5 & 2 & $\sqrt5$ & $0.236068$ & KCBS pentagon \\
+6 & 112 & \g{EUZO} & 8 & 2 & $\sqrt5$ & $0.236068$ & no improvement over $n=5$ \\
+7 & 853 & $C_7$ & 7 & 3 & $3.317667$ & $0.317667$ & \cite{tamer2026} \\
+8 & 11{,}117 & \g{GCQb\textasciigrave{}o} & 10 & 3 & $3.467844$ & $0.467844$ & Quad-$C_5$~\cite{tamer2026}; $R(3,4)$-graph \\
+9 & 261{,}080 & \g{HCRbdO\{} & 15 & 3 & $11/3$ & $\mathbf{2/3}$ & new; $|\mathrm{Aut}|=12$, one triangle \\
+10 & 11{,}716{,}571 & \g{ICRb\textasciigrave{}yiu?} & 20 & 3 & $3+1/\sqrt2$ & $\mathbf{1/\sqrt2}$ & new; 4-regular, $|\mathrm{Aut}|=16$ \\
+11 & 1{,}006{,}700{,}565 & \g{J?\textasciigrave{}D@pgd?\{?} & 17 & 4 & $4.774889$ & $\mathbf{0.774889}$ & new; triangle-free, $R(3,5)$-graph \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_winners.pdf}
+\caption{Record graphs. Top: the exhaustive maximizers for $n=8$ (Quad-$C_5$, \cite{tamer2026}), $n=9$ and $n=10$. Bottom: the exhaustive maximizer for $n=11$, the triangle-free maximizer for $n=12$, and the triangle-free maximizer for $n=13$, which is the circulant Ramsey graph $C_{13}(1,5)$.}
+\label{fig:winners}
+\end{figure}
+
+\paragraph{$n=9$.} The maximizer \g{HCRbdO\{} has 15 edges, degree sequence $3^6 4^3$, automorphism group of order 12 with vertex orbits of sizes 3 and 6, twelve induced pentagons and a single triangle. Its theta number is $11/3$ to twelve digits (Clarabel with tolerances $10^{-12}$), so $\gap=2/3$ exactly; the optimal $X$ has rank~4. The runner-up (\g{HCrb\textasciigrave{}qi}, 16 edges) is the Wagner graph plus one vertex and has $\theta=2+\varphi=3.618034$, $\varphi$ the golden ratio; it is followed by a large plateau of graphs at exactly Quad-$C_5$'s value $0.467844$ (Quad-$C_5$ plus a vertex that changes neither $\theta$ nor $\alpha$). The maximizer contains neither Quad-$C_5$ nor the Wagner graph as an induced subgraph. Its adjacency spectrum is $\{2+\sqrt2,\,1^{(2)},\,(\sqrt2-1)^{(2)},\,2-\sqrt2,\,-2,\,(-1-\sqrt2)^{(2)}\}$.
+
+\paragraph{$n=10$.} The maximizer \g{ICRb\textasciigrave{}yiu?} is 4-regular with 20 edges, $|\mathrm{Aut}|=16$ (orbits of sizes 2 and 8), sixteen induced pentagons and four triangles, and contains the Wagner graph as an induced subgraph. $\theta=3+1/\sqrt2$ to twelve digits. The runner-up (\g{ICQeR\textasciigrave{}[Mg}, $\gap=0.667155$) contains both Quad-$C_5$ and the $n=9$ maximizer; the ``$n=9$ maximizer plus a vertex'' lineage therefore reaches only second place, as the ``Wagner plus a vertex'' lineage did at $n=9$. The values for $n=9$ and $n=10$ can in principle be read off the table of Cabello, Danielsen, L\'opez-Tarrida and Portillo, who computed $\alpha$, $\theta$ (to four decimals) and $\alpha^*$ for all graphs with $\alpha<\theta$ on up to ten vertices~\cite{cabello2013basic,danielsen-db}; our runs reproduce that table graph-for-graph ($16{,}533$ graphs at $n=9$, $975{,}330$ at $n=10$, $|\theta-\theta_{\rm table}|\le 5.3\times10^{-5}$). The maxima were, however, never reported.
+
+\paragraph{$n=11$.} Here the picture changes. The five best graphs (Table~\ref{tab:n11}) are all triangle-free, have $\alpha=4$ and only 17--19 edges, while the best graph of the dense family that dominated $n\le10$ --- the $n=10$ maximizer plus one vertex, $\gap=0.735505$, which contains Quad-$C_5$, the Wagner graph and the $n=9$ and $n=10$ maximizers as induced subgraphs --- is only sixth. The maximizer \g{J?\textasciigrave{}D@pgd?\{?} has girth 4, degree sequence $2^1 3^8 4^2$, $|\mathrm{Aut}|=2$, eleven induced pentagons and four induced heptagons, and $d^*=4$. Note that $\gap_{\max}(11)-\gap_{\max}(10)=0.068$ is the smallest increment in the table; the sparse family is only just taking over.
+
+\begin{table}[t]
+\centering\small
+\caption{The ten largest gaps among all $1{,}006{,}700{,}565$ connected graphs on eleven vertices. ``tf'' = triangle-free.}
+\label{tab:n11}
+\begin{tabular}{rlrrrrl}
+\toprule
+rank & graph6 & $|E|$ & $\alpha$ & $\theta$ & $\gap$ & remarks \\
+\midrule
+1 & \g{J?\textasciigrave{}D@pgd?\{?} & 17 & 4 & 4.774889 & 0.774889 & tf, $R(3,5)$-graph \\
+2 & \g{J?\textasciigrave{}@f?kUDG\_} & 17 & 4 & 4.754686 & 0.754686 & tf \\
+3 & \g{J?\textasciigrave{}@f@WFTH?} & 18 & 4 & 4.753664 & 0.753664 & tf, contains Wagner \\
+4 & \g{J?\textasciigrave{}FBQoFCi?} & 18 & 4 & 4.752419 & 0.752419 & tf \\
+5 & \g{J?\textasciigrave{}@f@Wl?y?} & 18 & 4 & 4.747377 & 0.747377 & tf, contains Quad-$C_5$ \\
+6 & \g{JCRbeo\{ifI?} & 25 & 3 & 3.735505 & 0.735505 & $n{=}10$ maximizer $+$ vertex \\
+7 & \g{J?\textasciigrave{}FAqSFf\_?} & 19 & 4 & 4.734338 & 0.734338 & tf \\
+8 & \g{J?\textasciigrave{}FAosFdI?} & 19 & 4 & 4.725688 & 0.725688 & tf \\
+9 & \g{J?\textasciigrave{}DD\textasciigrave{}gD\textasciigrave{}s?} & 17 & 4 & 4.719179 & 0.719179 & tf \\
+10 & \g{JCRbeo\{ifM?} & 26 & 3 & 3.712900 & 0.712900 & dense family \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Gap versus ratio.} The maximizer of $\theta/\alpha$ differs from the maximizer of $\gap$ at $n=8$ (a CHSH-type graph, \cite{tamer2026}), $n=10$ (\g{IUZurzmmo}, $\alpha=2$, $\theta=5/2$, ratio $1.25$) and $n=11$ (the dense graph of rank~6 in Table~\ref{tab:n11}, ratio $1.2452$, versus $1.1937$ for the gap maximizer); at $n=9$ the two coincide.
+
+\subsection{Triangle-free graphs, $n=12,13$}
+
+Motivated by the $n=11$ result we searched exhaustively over connected triangle-free graphs, generated with \texttt{geng -t}~\cite{nauty}: $90{,}842$ graphs for $n=11$ (recovering the global top six), $1{,}144{,}061$ for $n=12$ and about $1.9\times10^7$ for $n=13$. The maxima are
+\begin{align*}
+\gap_{\max}^{\rm tf}(12)&=0.930021\quad(\theta=4.930021,\ \alpha=4,\ 20\text{ edges},\ \g{K?\textasciigrave{}DA\textasciigrave{}gd?\{Dg},\ |\mathrm{Aut}|=8,\ d^*=5),\\
+\gap_{\max}^{\rm tf}(13)&=1.181737\quad(\theta=5.181737,\ \alpha=4,\ 26\text{ edges},\ \g{L?\textasciigrave{}DE\textasciigrave{}gl@YJODg}).
+\end{align*}
+At $n=13$ the maximizer is isolated: the next best triangle-free graph has $\gap=0.854$ and $\alpha=5$. The maximizer is 4-regular with $|\mathrm{Aut}|=52$ and is isomorphic to the circulant graph $C_{13}(1,5)$, the unique $(3,5)$-Ramsey-critical graph.
+
+\section{The Ramsey structure of the maximizers}\label{sec:ramsey}
+
+\subsection{Every record graph is an $R(3,k)$-graph}
+
+By Lemma~\ref{lem:ramsey}, a triangle-free graph with $\alpha\le k-1$ is an $R(3,k)$-graph and exists only for $n<R(3,k)$. Checking the record graphs against McKay's catalogues by isomorphism gives:
+\begin{itemize}
+\item $n=8$: Quad-$C_5$ and the Wagner graph are two of the three $R(3,4)$-graphs on 8 vertices ($R(3,4)=9$).
+\item $n=9,10$: no triangle-free graph has $\alpha=3$ any more; the maximizers keep $\alpha=3$ by admitting one, respectively four, triangles.
+\item $n=11$: the maximizer is one of the $105$ $R(3,5)$-graphs on 11 vertices; indeed the 105 connected triangle-free graphs with $\alpha\le4$ on 11 vertices are exactly this catalogue.
+\item $n=12$: the triangle-free maximizer is one of the $12$ $R(3,5)$-graphs on 12 vertices.
+\item $n=13$: the triangle-free maximizer is the unique $R(3,5)$-graph on 13 vertices, $C_{13}(1,5)$.
+\end{itemize}
+The mechanism is transparent: $\theta$ grows with $n$ (roughly like $\sqrt n$ for sparse graphs), whereas $\alpha$ is bounded below by Ramsey theory and jumps by one at every $n=R(3,k)$. Records are therefore expected just before the jumps, at $n=R(3,k)-1$, and the gap should \emph{decrease} within the triangle-free class right after a jump.
+
+\subsection{The theta number of $C_{13}(1,5)$}
+
+For an edge-transitive graph the Lov\'asz bound $\theta(G)\ge -n\lambda_{\min}/(\lambda_{\max}-\lambda_{\min})$ is attained~\cite{lovasz1979}. The circulant $C_{13}(1,5)$ has eigenvalues $\lambda_j=2\cos(2\pi j/13)+2\cos(10\pi j/13)$, $j=0,\dots,12$, so $\lambda_{\max}=4$, $\lambda_{\min}=2\cos(8\pi/13)-2\cos(\pi/13)=-2.651093\ldots$ (multiplicity 4), and
+\begin{equation}
+\theta\bigl(C_{13}(1,5)\bigr)=\frac{13\,(-\lambda_{\min})}{4-\lambda_{\min}}=5.181736625\ldots,\qquad \gap=1.181736625\ldots,
+\end{equation}
+in agreement with the SDP value to nine digits. % TODO: express lambda_min in radicals / minimal polynomial
+
+\subsection{A ladder of lower bounds up to $n=35$}
+
+Since the $R(3,k)$-graphs are completely catalogued for $k\le 9$~\cite{mckay-ramsey,goedgebeur2013}, and $\alpha=k-1$ on all of them for $n\ge R(3,k-1)$ (Lemma~\ref{lem:ramsey}), the gap over each catalogue requires only $\theta$. Table~\ref{tab:ramsey} gives the maxima; together with Lemma~\ref{lem:mono} they are lower bounds on $\gap_{\max}(n)$ for all larger $n$. Figure~\ref{fig:ladder} summarizes the results.
+
+\begin{table}[t]
+\centering\small
+\caption{Maximum gap over all $R(3,k)$-graphs on $n$ vertices (McKay's catalogues; $\alpha=k-1$ analytically, $\theta$ by SDP). These are lower bounds on $\gap_{\max}(n)$. For $n=14$ the catalogue maximum is $C_{13}(1,5)$ plus an isolated vertex; the best connected graph is shown.}
+\label{tab:ramsey}
+\begin{tabular}{rrrrrrl}
+\toprule
+$k$ & $n$ & \#graphs & $\alpha$ & $\theta_{\max}$ & $\gap$ & best graph (graph6) \\
+\midrule
+5 & 13 & 1 & 4 & 5.181737 & 1.181737 & $C_{13}(1,5)$ \\
+6 & 14 & 263{,}520 & 5 & 6.072373 & 1.072373 & \g{MqGOOH@\_gQ?oGFCJ?} (connected) \\
+6 & 15 & 64{,}732 & 5 & 6.250964 & 1.250964 & \g{NoCOWGACGQIKGePIDI?} \\
+6 & 16 & 2{,}576 & 5 & 6.465350 & 1.465350 & \g{OoC?Igi\_?E\_eKcRCE@iO[} \\
+6 & 17 & 7 & 5 & 6.606664 & 1.606664 & \g{P@oGQA?\textasciigrave{}ACcdCtDYC]Ah?goC} \\
+7 & 21 & 1{,}118{,}436 & 6 & 8.141315 & 2.141315 & \g{THoGG?JODHsOADs\_wg?\textasciigrave{}GgSCZ??ig@@D@?GT} \\
+7 & 22 & 191 & 6 & 8.398747 & 2.398747 & \g{UsaC?GGC?DccQDCpKEJAOKW\textasciigrave{}Bo?kD\_[\_okHCUR??} \\
+8 & 27 & 477{,}142 & 7 & 10.060569 & 3.060569 & (Appendix~\ref{app:g6}) \\
+9 & 35 & 1 & 8 & 12.410586 & 4.410586 & the unique $(3,9)$-critical graph \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig_ladder.pdf}
+\caption{Maximum contextuality gap versus number of vertices: exhaustive over all connected graphs ($n\le11$), exhaustive over triangle-free graphs ($n\le13$), and lower bounds from the complete catalogues of $R(3,k)$-graphs. Vertical lines mark the Ramsey numbers $R(3,k)$, where $\alpha$ is forced up by one for triangle-free graphs.}
+\label{fig:ladder}
+\end{figure}
+
+Within the triangle-free class the maximum gap is \emph{not} monotone: it falls from $1.1817$ at $n=13$ to $1.0724$ at $n=14$, exactly as predicted by the jump of $\alpha$ at $R(3,5)=14$, and recovers from $n=15$ on. The global $\gap_{\max}(n)$ is monotone by Lemma~\ref{lem:mono}, but the graphs realizing the monotone extension (a record graph plus universal vertices) are degenerate as witnesses. We are led to:
+
+\begin{conjecture}\label{conj}
+For every $n\ge 11$, $\gap_{\max}(n)$ is attained by a triangle-free graph, and for $n=R(3,k)-1$ by an $R(3,k)$-critical graph.
+\end{conjecture}
+
+The conjecture is proved for $n=11$ (this paper) and false for $n=9,10$, where triangles are needed to keep $\alpha=3$; it is consistent with everything we computed for $n\le 13$. A brute-force test at $n=12$ would require $1.64\times10^{11}$ graphs.
+
+\section{Methods}\label{sec:method}
+
+\subsection{Enumeration and exact computation}
+Connected graphs on up to ten vertices were taken from McKay's lists and, for eleven vertices and for the triangle-free classes, generated with \texttt{geng} from \texttt{nauty}~2.8.9~\cite{nauty}, split into resumable \texttt{res/mod} parts. $\alpha$ was computed exactly by enumerating all $2^n$ vertex subsets (bit operations; on the GPU for $n\ge 11$). $\theta$ was computed with the interior-point solver Clarabel~\cite{clarabel} on the primal~\eqref{eq:theta-primal} with tolerances $10^{-9}$ (and $10^{-12}$ for the record graphs), at about $8{,}000$ graphs per second on 20 CPU processes; the full $n=10$ run took 51 minutes.
+
+\subsection{Rigorous GPU screening for $n=11$}
+Exact SDPs for $10^9$ graphs would take several days. Instead we use the dual~\eqref{eq:theta-dual}: \emph{every} matrix $Y$ supported on the edges gives a certified upper bound $\lambda_{\max}(J+Y)\ge\theta(G)$. For a batch of $2^{15}$ graphs we optimize $Y$ per graph with 100 Adam steps on the softmax-smoothed largest eigenvalue $\tau\log\sum_i e^{\lambda_i/\tau}$ ($\tau$ annealed from $0.3$ to $0.02$; gradient $V\,\mathrm{diag}(\mathrm{softmax}(\lambda/\tau))\,V^{\mathsf T}$ masked to $E$), using batched single-precision eigendecompositions. Every ten steps, graphs with $\lambda_{\max}(J+Y)+10^{-3}-\alpha(G)<\gap_{\rm thr}$ are removed from the batch; since the bound is valid at every step and only improves, this is rigorous up to the single-precision margin, which is three orders of magnitude above the eigenvalue error for $11\times11$ matrices. Survivors receive a double-precision certificate and are re-solved exactly with Clarabel. With $\gap_{\rm thr}=1/\sqrt2-10^{-6}$ (the $n=10$ record, valid by Lemma~\ref{lem:mono}), the screen processed all $1{,}006{,}700{,}565$ graphs in 2.41~hours on an RTX~2000 Ada (8\,GB) at $0.95$--$1.3\times10^5$ graphs per second, leaving 100 survivors, 51 of which indeed have $\gap\ge1/\sqrt2$.
+
+\paragraph{Validation.} With no threshold, the certified bounds exceed $\theta$ by a median of $0.006$ (max $0.21$) over the $11{,}117$ graphs on eight vertices, and never fall below $\theta$. With thresholds $0.60$ at $n=9$ and $0.65$ at $n=10$, the survivors are exactly the two, respectively thirty, graphs known to exceed the threshold (from the exact runs and from~\cite{danielsen-db}), with no misses and no false survivors.
+
+\subsection{Ramsey catalogues}
+For the $R(3,k)$-graphs we used McKay's files \texttt{r35\_13}, \texttt{r36\_14}--\texttt{r36\_17}, \texttt{r37\_21}, \texttt{r37\_22}, \texttt{r38\_27}, \texttt{r39\_35}~\cite{mckay-ramsey}; $\alpha=k-1$ on all of them by Lemma~\ref{lem:ramsey}, and $\theta$ was computed with Clarabel (74 minutes for the $1{,}118{,}436$ graphs on 21 vertices, 88 minutes for the $477{,}142$ graphs on 27 vertices).
+
+\section{Discussion}\label{sec:discussion}
+
+% TODO physics: minimal dimension d*, explicit orthonormal representations, noise robustness / visibility (à la Tamer et al. §IV) for the n=9, 10, 11 and C13(1,5) witnesses
+% TODO theory: upper bound on theta for triangle-free graphs (e.g. via degree / Hoffman) to bracket gap_max(n)
+% TODO literature: theta of Ramsey graphs in the Shannon-capacity literature (Alon); differentiate
+% TODO: n=12 status — local search from the winners for graphs with triangles beating 0.930021
+
+\section{Conclusion}
+% TODO
+
+\section*{Code and data availability}
+All scripts (exact search, GPU screening, Ramsey catalogue processing), the result tables with graph6 identifiers, and the certificates for the record graphs are available at \texttt{<repository URL>}. % TODO
+
+\appendix
+\section{Reproduction of the eight-vertex ranking}\label{app:n8}
+% TODO: table matching Tamer et al. Table II (ranks 1-10) from results/n8.csv
+
+\section{graph6 strings and certificates}\label{app:g6}
+% TODO: full graph6 of the R(3,8) record; edge lists of the record graphs; dual certificates
+
+\begin{thebibliography}{99}
+\bibitem{csw2014} A.~Cabello, S.~Severini, and A.~Winter, Graph-theoretic approach to quantum correlations, Phys. Rev. Lett. \textbf{112}, 040401 (2014).
+\bibitem{lovasz1979} L.~Lov\'asz, On the Shannon capacity of a graph, IEEE Trans. Inf. Theory \textbf{25}, 1 (1979).
+\bibitem{knuth1994} D.~E.~Knuth, The sandwich theorem, Electron. J. Combin. \textbf{1}, A1 (1994).
+\bibitem{cabello2013basic} A.~Cabello, L.~E.~Danielsen, A.~J.~L\'opez-Tarrida, and J.~R.~Portillo, Basic exclusivity graphs in quantum correlations, Phys. Rev. A \textbf{88}, 032104 (2013).
+\bibitem{danielsen-db} A.~Cabello, L.~E.~Danielsen, A.~J.~L\'opez-Tarrida, and J.~R.~Portillo, Database of quantum graphs, \url{https://www.codetables.de/larsed/quantum_graphs/}.
+\bibitem{amselem2012} E.~Amselem, L.~E.~Danielsen, A.~J.~L\'opez-Tarrida, J.~R.~Portillo, M.~Bourennane, and A.~Cabello, Experimental fully contextual correlations, Phys. Rev. Lett. \textbf{108}, 200405 (2012).
+\bibitem{canas2016} G.~Ca\~nas, E.~Acu\~na, J.~Cari\~ne, J.~F.~Barra, E.~S.~G\'omez, G.~B.~Xavier, G.~Lima, and A.~Cabello, Experimental demonstration of the connection between quantum contextuality and graph theory, Phys. Rev. A \textbf{94}, 012337 (2016).
+\bibitem{ray2021} M.~Ray, N.~G.~Boddu, K.~Bharti, L.-C.~Kwek, and A.~Cabello, Graph-theoretic approach to dimension witnessing, New J. Phys. \textbf{23}, 033006 (2021).
+\bibitem{tamer2026} U.~Tamer, \"O.~E.~M\"ustecapl{\i}o\u{g}lu, A.~Dizdar, and Z.~Gedik, The Quad-$C_5$ graph: maximum contextuality gap on eight vertices, arXiv:2605.12828 (2026).
+\bibitem{muller2026} A.~Muller and M.~Saniga, Automated search for highly contextual Kochen--Specker proofs, arXiv:2609.19862 (2026).
+\bibitem{kcbs2008} A.~A.~Klyachko, M.~A.~Can, S.~Binicio\u{g}lu, and A.~S.~Shumovsky, Simple test for hidden variables in spin-1 systems, Phys. Rev. Lett. \textbf{101}, 020403 (2008).
+\bibitem{radziszowski} S.~P.~Radziszowski, Small Ramsey numbers, Electron. J. Combin., Dynamic Survey DS1 (revised regularly).
+\bibitem{goedgebeur2013} J.~Goedgebeur and S.~P.~Radziszowski, New computational upper bounds for Ramsey numbers $R(3,k)$, Electron. J. Combin. \textbf{20}, P30 (2013).
+\bibitem{mckay-ramsey} B.~D.~McKay, Ramsey graphs, \url{https://users.cecs.anu.edu.au/~bdm/data/ramsey.html}.
+\bibitem{nauty} B.~D.~McKay and A.~Piperno, Practical graph isomorphism, II, J. Symbolic Comput. \textbf{60}, 94 (2014).
+\bibitem{clarabel} P.~J.~Goulart and Y.~Chen, Clarabel: An interior-point solver for conic programs with quadratic objectives, arXiv:2405.12762 (2024).
+\bibitem{alon} N.~Alon, Lov\'asz, vectors, graphs and codes, in \emph{Building Bridges II}, Bolyai Soc. Math. Stud. \textbf{28} (Springer, 2019). % TODO verify
+\end{thebibliography}
+
+\end{document}
