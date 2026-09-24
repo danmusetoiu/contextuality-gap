@@ -15,7 +15,8 @@ This repository maximizes the absolute contextuality gap `Δ(G) = ϑ(G) − α(G
 | 10 | 11,716,571 | **1/√2** | 3+1/√2 | 3 | `ICRb`yiu?` | new |
 | 11 | 1,006,700,565 | **0.774889** | 4.774889 | 4 | `J?`D@pgd?{?` | new; triangle-free, an R(3,5)-graph |
 
-Triangle-free class, exhaustive: n=12 → 0.930021 (`K?`DA`gd?{Dg`), n=13 → 1.181737 = the Ramsey graph C13(1,5).
+Triangle-free class, exhaustive: n=12 → 0.930021 (`K?`DA`gd?{Dg`), n=13 → 1.181737 = the Ramsey graph C13(1,5),
+n=14 → 1.072373 (445,781,050 graphs, 6.1 h; the drop is forced by R(3,5)=14, which pushes α to 5).
 Every record graph is an R(3,k)-graph (triangle-free with α ≤ k−1); computing ϑ over McKay's complete catalogues of
 R(3,k)-graphs gives lower bounds on Δ_max(n) up to n=35 (Δ ≥ 4.4106 from the unique R(3,9)-critical graph).
 See `PAPER_SUMMARY.md` and `NOTES.md` for the full story and the lab log.
